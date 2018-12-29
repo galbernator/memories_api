@@ -25,22 +25,9 @@ final class Token: PostgreSQLModel {
     }
 
     static func createToken(forUser user: User) throws -> Token {
-        let tokenString = randomToken()
+        let tokenString = try CryptoRandom().generateData(count: 60).base64EncodedString()
         let newToken = try Token(token: tokenString, userID: user.requireID())
         return newToken
-    }
-
-    private static func randomToken() -> String {
-        let allowedChars = "$!abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        let allowedCharsCount = UInt32(allowedChars.count)
-        var randomString = ""
-        for _ in 0 ..< 60 {
-            let randomNumber = Int(arc4random_uniform(allowedCharsCount))
-            let randomIndex = allowedChars.index(allowedChars.startIndex, offsetBy: randomNumber)
-            let newCharacter = allowedChars[randomIndex]
-            randomString += String(newCharacter)
-        }
-        return randomString
     }
 }
 
