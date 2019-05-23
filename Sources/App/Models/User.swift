@@ -13,8 +13,11 @@ import Authentication
 final class User: PostgreSQLModel {
 
     struct PublicUser {
-        let username: String
+        let firstName: String
+        let lastName: String
+        let email: String
         let token: String
+        let username: String
     }
 
     struct LoginRequest {
@@ -27,12 +30,14 @@ final class User: PostgreSQLModel {
     let lastName: String
     let email: String
     let password: String
+    let username: String
 
-    init(firstName: String, lastName: String, email: String, password: String) {
+    init(firstName: String, lastName: String, email: String, password: String, username: String) {
         self.firstName = firstName
         self.lastName = lastName
         self.email = email
         self.password = password
+        self.username = username
     }
 
     var memories: Children<User, Memory> {

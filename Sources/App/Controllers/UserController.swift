@@ -22,7 +22,8 @@ final class UserController {
             let persistedUser = User(firstName: newUser.firstName,
                                      lastName: newUser.lastName,
                                      email: newUser.email,
-                                     password:  hashedPassword)
+                                     password:  hashedPassword,
+                                     username: newUser.username)
 
             return persistedUser.save(on: request).flatMap(to: User.PublicUser.self) { createdUser in
                 return try self.publicUser(from: createdUser, for: request)
@@ -47,7 +48,13 @@ final class UserController {
     private func publicUser(from user: User, for request: Request) throws -> Future<User.PublicUser> {
         let token = try Token.createToken(forUser: user)
         return token.save(on: request).map(to: User.PublicUser.self) { createdToken in
-            return User.PublicUser(username: user.email, token: createdToken.token)
+            return User.PublicUser(
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                token: createdToken.token,
+                username: user.username
+            )
         }
     }
 }
